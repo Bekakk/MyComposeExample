@@ -11,6 +11,7 @@ import com.example.myapp.navigation.FeatureGraphs
 @Composable
 fun InsuranceScreen1(
     viewModel: InsuranceScreen1ViewModel, navController: NavHostController,
+    openScreen2: () -> Unit,
     insuranceDetails: FeatureGraphs.INSURANCE.Screen1?
 ) {
 
@@ -22,11 +23,10 @@ fun InsuranceScreen1(
         }
 
 
-        Text("Go to Insurance Screen 2")
         Button(onClick = {
-            navController.navigate(FeatureGraphs.INSURANCE.Screen1) {}
+            openScreen2.invoke()
         }) {
-            Text("Go To New Flow")
+            Text("Go to Insurance Screen 2")
         }
         Button(onClick = {
             navController.popBackStack()

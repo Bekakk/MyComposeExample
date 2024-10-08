@@ -4,10 +4,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-@Serializable
 sealed class FeatureGraphs {
 
-    @Serializable
     sealed class LOAN : FeatureGraphs() {
         @Serializable
         data object Screen1 : LOAN()
@@ -16,7 +14,6 @@ sealed class FeatureGraphs {
         data object Screen2 : LOAN()
     }
 
-    @Serializable
     sealed class INSURANCE : FeatureGraphs() {
         @Serializable
         data class Screen1(

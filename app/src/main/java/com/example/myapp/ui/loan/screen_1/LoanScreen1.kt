@@ -13,12 +13,11 @@ fun LoanScreen1(
     openScreen2: () -> Unit
 ) {
     Column {
-        Text("Loan Screen 1")
         Button(onClick = {
             // Navigate within Loan Feature
             openScreen2.invoke()
         }) {
-            Text("Go To New Flow")
+            Text("Go to Loan Screen 2")
         }
         Button(onClick = {
             val policyId = "12345"

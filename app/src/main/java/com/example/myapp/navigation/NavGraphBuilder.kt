@@ -68,7 +68,10 @@ fun NavGraphBuilder.insurance(navController: NavHostController) {
             InsuranceScreen1(
                 navController = navController,
                 viewModel = viewModel,
-                insuranceDetails = insuranceDetails
+                insuranceDetails = insuranceDetails,
+                openScreen2 = {
+                    navController.navigate(FeatureGraphs.INSURANCE.Screen2::class.java.name)
+                }
             )
         }
 
