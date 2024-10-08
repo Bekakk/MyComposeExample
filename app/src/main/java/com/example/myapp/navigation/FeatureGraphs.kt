@@ -1,29 +1,42 @@
 package com.example.myapp.navigation
 
-object FeatureGraphs {
-    const val LOAN = "LOAN"
-    const val INSURANCE = "INSURANCE"
-}
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
-sealed class LoanScreen(val route: String) {
-    object SCREEN1 : LoanScreen(route = "L_SCREEN1")
-    object SCREEN2 : LoanScreen(route = "L_SCREEN2")
-}
+@Serializable
+sealed class FeatureGraphs {
 
-sealed class InsuranceScreen(val route: String) {
-    object SCREEN1 : LoanScreen(route = "I_SCREEN1")
-    object SCREEN2 : LoanScreen(route = "I_SCREEN2")
-}
+    @Serializable
+    sealed class LOAN : FeatureGraphs() {
+        @Serializable
+        data object Screen1 : LOAN()
 
-object FeatureState {
-    // Use a map to track the loaded state of multiple features
-    private val featureLoadedStates = mutableMapOf<String, Boolean>()
-
-    fun isFeatureLoaded(featureName: String): Boolean {
-        return featureLoadedStates[featureName] ?: false
+        @Serializable
+        data object Screen2 : LOAN()
     }
 
-    fun setFeatureLoaded(featureName: String, loaded: Boolean) {
-        featureLoadedStates[featureName] = loaded
+    @Serializable
+    sealed class INSURANCE : FeatureGraphs() {
+        @Serializable
+        data class Screen1(
+            val policyId: String,
+            val customerName: String
+        ) : INSURANCE() {
+            fun route(): String {
+                // Serialize the object to a JSON string for the route
+                val jsonString = Json.encodeToString(this)
+                return "${this::class.java.name}/$jsonString"
+            }
+        }
+
+        @Serializable
+        data object Screen2 : INSURANCE()
     }
 }
+
+
+
+
+
+

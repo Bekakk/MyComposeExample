@@ -1,12 +1,7 @@
 package com.example.myapp.navigation
 
-import ObserveFeatureLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
-import com.example.myapp.di.insurance.InsuranceModule
-import com.example.myapp.di.loan.LoanModule
 import com.example.myapp.ui.insurance.screen_1.InsuranceScreen1
 import com.example.myapp.ui.insurance.screen_1.InsuranceScreen1ViewModel
 import com.example.myapp.ui.insurance.screen_2.InsuranceScreen2
@@ -15,44 +10,39 @@ import com.example.myapp.ui.loan.screen_1.LoanScreen1
 import com.example.myapp.ui.loan.screen_1.LoanScreen1ViewModel
 import com.example.myapp.ui.loan.screen_2.LoanScreen2
 import com.example.myapp.ui.loan.screen_2.LoanScreen2ViewModel
-import org.koin.androidx.compose.getViewModel
-
+import androidx.navigation.compose.composable
+import androidx.navigation.navigation
+import kotlinx.serialization.json.Json
+import org.koin.androidx.compose.koinViewModel
 
 fun NavGraphBuilder.loan(navController: NavHostController) {
     navigation(
-        startDestination = LoanScreen.SCREEN1.route,
-        route = FeatureGraphs.LOAN
+        startDestination = FeatureGraphs.LOAN.Screen1::class.java.name,
+        route = FeatureGraphs.LOAN::class.java.name
     ) {
-        composable(LoanScreen.SCREEN1.route) { navBackStackEntry ->
-            val viewModel: LoanScreen1ViewModel = getViewModel()
-
-//            ObserveFeatureLifecycle(
-//                navBackStackEntry,
-//                LoanModule.modules,
-//                navBackStackEntry.destination.route!!
-//            )
-
+        composable(
+            route = FeatureGraphs.LOAN.Screen1::class.java.name
+        ) {
+            val viewModel: LoanScreen1ViewModel = koinViewModel()
             LoanScreen1(
                 viewModel = viewModel,
-                openInsurance = {
-                    navController.navigate(FeatureGraphs.INSURANCE) {
-                        
-                    }
+                openInsurance = { policyId, customerName ->
+                    val screen1 = FeatureGraphs.INSURANCE.Screen1(
+                        policyId = policyId!!,
+                        customerName = customerName!!
+                    )
+                    navController.navigate(screen1.route())
                 },
                 openScreen2 = {
-                    navController.navigate(LoanScreen.SCREEN2.route)
-
-                })
+                    navController.navigate(FeatureGraphs.LOAN.Screen2::class.java.name)
+                }
+            )
         }
 
-        composable(LoanScreen.SCREEN2.route) { navBackStackEntry ->
-            val viewModel: LoanScreen2ViewModel = getViewModel()
-//            ObserveFeatureLifecycle(
-//                navBackStackEntry,
-//                LoanModule.modules,
-//                navBackStackEntry.destination.route!!
-//            )
-
+        composable(
+            route = FeatureGraphs.LOAN.Screen2::class.java.name
+        ) {
+            val viewModel: LoanScreen2ViewModel = koinViewModel()
             LoanScreen2(
                 navController = navController,
                 viewModel = viewModel,
@@ -61,29 +51,31 @@ fun NavGraphBuilder.loan(navController: NavHostController) {
     }
 }
 
-
 fun NavGraphBuilder.insurance(navController: NavHostController) {
     navigation(
-        startDestination = InsuranceScreen.SCREEN1.route,
-        route = FeatureGraphs.INSURANCE
+        startDestination = "${FeatureGraphs.INSURANCE.Screen1::class.java.name}/{insuranceDetails}",
+        route = FeatureGraphs.INSURANCE::class.java.name
     ) {
-        composable(InsuranceScreen.SCREEN1.route) { navBackStackEntry ->
-//            ObserveFeatureLifecycle(
-//                navBackStackEntry,
-//                InsuranceModule.modules,
-//                InsuranceScreen.SCREEN1.route
-//            )
-            val viewModel: InsuranceScreen1ViewModel = getViewModel()
-            InsuranceScreen1(navController = navController, viewModel = viewModel)
-        }
-        composable(InsuranceScreen.SCREEN2.route) { navBackStackEntry ->
-            val viewModel: InsuranceScreen2ViewModel = getViewModel()
-//            ObserveFeatureLifecycle(
-//                navBackStackEntry,
-//                InsuranceModule.modules,
-//                InsuranceScreen.SCREEN1.route
-//            )
+        composable(
+            route = "${FeatureGraphs.INSURANCE.Screen1::class.java.name}/{insuranceDetails}"
+        ) { backStackEntry ->
+            // Retrieve the JSON string from the back stack entry
+            val jsonString = backStackEntry.arguments?.getString("insuranceDetails")
+            val insuranceDetails =
+                jsonString?.let { Json.decodeFromString<FeatureGraphs.INSURANCE.Screen1>(it) }
 
+            val viewModel: InsuranceScreen1ViewModel = koinViewModel()
+            InsuranceScreen1(
+                navController = navController,
+                viewModel = viewModel,
+                insuranceDetails = insuranceDetails
+            )
+        }
+
+        composable(
+            route = FeatureGraphs.INSURANCE.Screen2::class.java.name
+        ) {
+            val viewModel: InsuranceScreen2ViewModel = koinViewModel()
             InsuranceScreen2(navController = navController, viewModel = viewModel)
         }
     }

@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 @Composable
 fun LoanScreen1(
     viewModel: LoanScreen1ViewModel,
-    openInsurance: () -> Unit,
+    openInsurance: (String?, String?) -> Unit,
     openScreen2: () -> Unit
 ) {
     Column {
@@ -21,7 +21,9 @@ fun LoanScreen1(
             Text("Go To New Flow")
         }
         Button(onClick = {
-            openInsurance.invoke()
+            val policyId = "12345"
+            val customerName = "John Doe"
+            openInsurance.invoke(policyId ,customerName)
         }) {
             Text("Switch to Insurance Feature")
         }
