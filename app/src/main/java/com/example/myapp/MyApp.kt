@@ -1,8 +1,8 @@
 package com.example.myapp
 
 import android.app.Application
-import com.example.myapp.di.insurance.InsuranceModule
-import com.example.myapp.di.loan.LoanModule
+import com.example.myapp.di.insurance.InsuranceModuleScope
+import com.example.myapp.di.loan.LoanModuleScope
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -13,8 +13,8 @@ class MyApp : Application() {
         startKoin {
             androidContext(this@MyApp)
             modules(
-                LoanModule.modules,
-                InsuranceModule.modules
+                LoanModuleScope,
+                InsuranceModuleScope
             )
         }
     }

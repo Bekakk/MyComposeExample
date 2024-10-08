@@ -21,7 +21,6 @@ sealed class FeatureGraphs {
             val customerName: String
         ) : INSURANCE() {
             fun route(): String {
-                // Serialize the object to a JSON string for the route
                 val jsonString = Json.encodeToString(this)
                 return "${this::class.java.name}/$jsonString"
             }
